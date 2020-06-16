@@ -18,7 +18,8 @@ export default function LinkContainer(props) {
     const getResources = () => {
         const randomString = uuid();
         const todayDate = getDate();
-        const title = todayDate + "-" + PREFIX_TITLE + "-" + randomString;
+        const titleSuffix = randomString.split("-")[0];
+        const title = todayDate + "-" + PREFIX_TITLE + "-" + titleSuffix;
         const description = randomString;
         const subject = randomString;
         const collection = "opensource_movies";
@@ -44,9 +45,9 @@ export default function LinkContainer(props) {
         url = url + "&collection=" + resource.collection;
         return {
             url : url,
-            guid : resource.guid
+            guid : resource.guid,
+            title : resource.title
         }
-        return url;
     }
 
     const generateLinks = (count) => {
@@ -56,7 +57,7 @@ export default function LinkContainer(props) {
     return (
         <div>
             {
-                generateLinks(4).map(x => <div style={{"padding" : "5px"}}><a href={x.url}>{x.guid}</a></div>)
+                generateLinks(4).map(x => <div style={{"padding" : "5px"}}><a href={x.url}>{x.title}</a></div>)
             }               
         </div>
     )
