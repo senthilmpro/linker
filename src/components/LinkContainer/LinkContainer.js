@@ -1,64 +1,68 @@
-import React from 'react';
+import React, { useState } from 'react';
+import LinkService from '../../services/link-service';
+import './LinkContainer.css';
 
 export default function LinkContainer(props) {
-    const PREFIX_TITLE = "tmp0x"
 
-    function uuid() {
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-            return v.toString(16);
-        });
+    const [creator, setCreator] = useState("tmp0x");
+    const [count, setCount] = useState(4);
+
+    const isNumber = (str) => {
+        var pattern = /^\d+$/;
+        return pattern.test(str);
     }
 
-    const getDate = () => {
-        let today = new Date();
-        return today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+    const onCreatorChange = (e) => {
+        let txt = e.target.value;
+        txt = txt.trim();
+        setCreator(txt);
     }
 
-    const getResources = () => {
-        const randomString = uuid();
-        const todayDate = getDate();
-        const titleSuffix = randomString.split("-")[0];
-        const title = todayDate + "-" + PREFIX_TITLE + "-" + titleSuffix;
-        const description = randomString;
-        const subject = randomString;
-        const collection = "opensource_movies";
-        const guid = randomString;
-        const creator = PREFIX_TITLE;
-        return {
-            title, 
-            description,
-            subject,
-            collection,
-            creator,
-            guid
+    const onCountChange = (e) => {
+        let count = (e.target.value);
+        if (!count || !isNumber(count)) {
+            count = 0;
+            setCount(count);
+        } else {
+            try {
+                count = parseInt(count);
+            } catch (err) {
+                count = 4;
+            }
+            setCount(count);
         }
-    }
 
-    const generateLink = () => {
-        let resource = getResources();
-        let url = `https://archive.org/upload/`;
-        url = url + "?title="+resource.title;
-        url = url + "&description="+resource.description;
-        url = url + "&subject=" + resource.subject;
-        url = url + "&creator=" + resource.creator;
-        url = url + "&collection=" + resource.collection;
-        return {
-            url : url,
-            guid : resource.guid,
-            title : resource.title
-        }
-    }
-
-    const generateLinks = (count) => {
-        return Array(count).fill(0).map(x => generateLink())
     }
 
     return (
-        <div>
-            {
-                generateLinks(4).map(x => <div style={{"padding" : "5px"}}><a href={x.url}>{x.title}</a></div>)
-            }               
+        <div className='container'>
+            <div className="LinkContainerBox">
+                {
+                    LinkService.generateLinks(count, creator).map(x => <div style={{ "padding": "5px" }}><a href={x.url} target="_blank" rel="noopener noreferrer">{x.title}</a></div>)
+                }
+            </div>
+            <div className="EditSettings">
+                <div>
+                    <h3>SETTINGS</h3>
+                </div>
+                <div>
+                    <div className="setting form-group row">
+                        <label for="creator">Creator</label>
+                        <div class="col-sm-2">
+                            <input type="text" onChange={onCreatorChange} defaultValue="tmp0x" class="form-control"></input>
+                        </div>
+                    </div>
+                    <div className="setting form-group row">
+                        <label for="creator">Count</label>
+                        <div class="col-sm-2">
+                            <input type="text" onChange={onCountChange} defaultValue={4} class="form-control"></input>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
         </div>
     )
 }
