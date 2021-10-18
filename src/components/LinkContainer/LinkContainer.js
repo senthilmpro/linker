@@ -2,10 +2,17 @@ import React, { useState } from 'react';
 import LinkService from '../../services/link-service';
 import './LinkContainer.css';
 
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue((value) => value + 1);
+}
+
 export default function LinkContainer(props) {
 
     const [creator, setCreator] = useState("tmp0x");
     const [count, setCount] = useState(4);
+    const forceUpdate = useForceUpdate();
+
 
     const isNumber = (str) => {
         var pattern = /^\d+$/;
@@ -47,15 +54,28 @@ export default function LinkContainer(props) {
                 </div>
                 <div>
                     <div className="setting form-group row">
-                        <label for="creator">Creator</label>
+                        <div class="col-sm-2">
+                            <label for="creator">Creator</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" onChange={onCreatorChange} defaultValue="tmp0x" class="form-control"></input>
                         </div>
                     </div>
                     <div className="setting form-group row">
-                        <label for="creator">Count</label>
+
+                        <div class="col-sm-2">
+                            <label for="count">Count</label>
+                        </div>
                         <div class="col-sm-2">
                             <input type="text" onChange={onCountChange} defaultValue={4} class="form-control"></input>
+                        </div>
+                    </div>
+                    <div className="setting form-group row">
+                        <div class="col-sm-2">
+
+                        </div>
+                        <div class="col-sm-2">
+                            <button className="btn btn-primary" onClick={forceUpdate}>Refresh</button>
                         </div>
 
                     </div>
